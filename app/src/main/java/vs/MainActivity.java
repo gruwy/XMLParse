@@ -6,39 +6,38 @@ import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-import static java.lang.System.in;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String URL = "http://127.0.0.1:8080";
+    private List<InsideXML> entries;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        ListView listView;
-        listView = findViewById(R.id.listView);
+        ListView listView = (ListView) findViewById(R.id.listView);
 
-        InsideXML insideXML = new InsideXML(title, description);
+        XMLParser xmlParser = new XMLParser(this);
+        List<InsideXML> entries = new ArrayList<>();
+
+        try {
+            xmlParser.parse();
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+
+
+        ArrayAdapter<InsideXML> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_list_item_1, entries);
+        listView.setAdapter(adapter);
 
 
     }}
-
-
-
-
-
-
-
-
-

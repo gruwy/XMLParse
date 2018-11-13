@@ -1,7 +1,7 @@
 package vs.xmlparse;
 
-import android.util.Log;
-import android.util.Xml;
+import android.content.Context;
+
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -11,21 +11,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class XMLParser {
+    private Context context;
+
+    XMLParser(Context current){
+        this.context = current;
+    }
 
     private static final String ns = null;
 
-    private List parse() throws XmlPullParserException, IOException {
-        try {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.nextTag();
-            return readBuilding(parser);
-        } finally {
-        }
+
+    public List<InsideXML> parse() throws XmlPullParserException, IOException {
+        XmlPullParser parser = context.getResources().getXml(R.xml.app);
+        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        parser.nextTag();
+        return readBuilding(parser);
     }
 
-    private List readBuilding(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List entries = new ArrayList<>();
+    private List<InsideXML> readBuilding(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<InsideXML> entries = new ArrayList<InsideXML>();
 
         parser.require(XmlPullParser.START_TAG, ns, "building");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -35,7 +38,7 @@ public class XMLParser {
             String name = parser.getName();
 
             if (name.equals("object")) {
-                entries.add(readBuilding(parser));
+                entries.add(readObject(parser));
             } else {
                 skip(parser);
             }
@@ -43,7 +46,7 @@ public class XMLParser {
         return entries;
     }
 
-    public InsideXML readObject(XmlPullParser parser, String ns) throws XmlPullParserException, IOException {
+    private InsideXML readObject(XmlPullParser parser) throws XmlPullParserException, IOException {
         parser.require(XmlPullParser.START_TAG, ns, "object");
         String title = null;
         String description = null;
