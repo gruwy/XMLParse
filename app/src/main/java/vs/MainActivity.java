@@ -2,10 +2,12 @@ package vs.xmlparse;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
@@ -16,7 +18,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private static final String URL = "http://127.0.0.1:8080";
-    private List<InsideXML> entries;
+    XMLParser xmlParser = new XMLParser(this);
+
+    ArrayList<String> arrayWithTitles = new ArrayList<String>();
+    ArrayList<String> arrayWithDescription = new ArrayList<String>();
+
+    XmlPullParser parser;
+
+    List<InsideXML> entries = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,19 +34,31 @@ public class MainActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.listView);
 
-        XMLParser xmlParser = new XMLParser(this);
-        List<InsideXML> entries = new ArrayList<>();
-
         try {
-            xmlParser.parse();
-        } catch (XmlPullParserException | IOException e) {
+            entries = xmlParser.parse();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
+        for (InsideXML insideXML : entries)
 
-        ArrayAdapter<InsideXML> adapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, entries);
+        {
+            arrayWithTitles.add(insideXML.title);
+            arrayWithDescription.add(insideXML.description);
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, arrayWithTitles);
         listView.setAdapter(adapter);
 
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-    }}
+            }
+        });
+
+    }
+}

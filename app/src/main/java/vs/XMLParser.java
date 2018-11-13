@@ -1,6 +1,7 @@
 package vs.xmlparse;
 
 import android.content.Context;
+import android.util.Log;
 
 
 import org.xmlpull.v1.XmlPullParser;
@@ -22,32 +23,33 @@ public class XMLParser {
 
     public List<InsideXML> parse() throws XmlPullParserException, IOException {
         XmlPullParser parser = context.getResources().getXml(R.xml.app);
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
+        parser.next();
         parser.nextTag();
-        return readBuilding(parser);
+        return readParkingLot(parser);
     }
 
-    private List<InsideXML> readBuilding(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List<InsideXML> entries = new ArrayList<InsideXML>();
+    public List<InsideXML> readParkingLot(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List<InsideXML> entries = new ArrayList<>();
 
-        parser.require(XmlPullParser.START_TAG, ns, "building");
+        parser.require(XmlPullParser.START_TAG, ns, "parkinglot");
         while (parser.next() != XmlPullParser.END_TAG) {
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
 
-            if (name.equals("object")) {
-                entries.add(readObject(parser));
+            if (name.equals("car")) {
+                entries.add(readCar(parser));
             } else {
                 skip(parser);
             }
         }
+        Log.d("Entries:", entries.toString());
         return entries;
     }
 
-    private InsideXML readObject(XmlPullParser parser) throws XmlPullParserException, IOException {
-        parser.require(XmlPullParser.START_TAG, ns, "object");
+    private InsideXML readCar(XmlPullParser parser) throws XmlPullParserException, IOException {
+        parser.require(XmlPullParser.START_TAG, ns, "car");
         String title = null;
         String description = null;
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -63,34 +65,38 @@ public class XMLParser {
                 skip(parser);
             }
         }
+        Log.d("InsideXML:", String.valueOf(new InsideXML(title, description)));
         return new InsideXML(title, description);
     }
 
     // Processes title tags in the feed.
-    private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
+    public String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
 
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "title");
+        Log.d("Title:", title);
         return title;
     }
 
     // Processes summary tags in the feed.
-    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+    public String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
 
         parser.require(XmlPullParser.START_TAG, ns, "description");
-        String summary = readText(parser);
+        String description = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "description");
-        return summary;
+        Log.d("Description:", description);
+        return description;
     }
 
     // For the tags title and summary, extracts their text values.
-    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+    public String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
             parser.nextTag();
         }
+        Log.d("Extracted text:", result);
         return result;
     }
 
