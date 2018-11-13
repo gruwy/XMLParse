@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<objects>
+	<object>
+		<title>Title 1</title>
+		<description>Description 1</description>
+	</object>
+	
+	<object>
+		<title>Title 2</title>
+		<description>Description 2</description>
+	</object>
+	
+	<object>
+		<title>Title 3</title>
+		<description>Description 3</description>
+	</object>
+	
+	<object>
+		<title>Title 4</title>
+		<description>Description 4</description>
+	</object>
+	
+	<object>
+		<title>Title 5</title>
+		<description>Description 5</description>
+	</object>
+</objects>
