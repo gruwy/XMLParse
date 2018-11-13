@@ -29,7 +29,12 @@ public class MainActivity extends AppCompatActivity {
         ListView listView;
         listView = findViewById(R.id.listView);
 
+        InsideXML insideXML = new InsideXML(title, description);
+
+
     }}
+
+
 
 
 

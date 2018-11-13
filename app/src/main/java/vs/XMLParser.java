@@ -1,5 +1,6 @@
 package vs.xmlparse;
 
+import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -13,7 +14,7 @@ public class XMLParser {
 
     private static final String ns = null;
 
-    private List<InsideXML> parse() throws XmlPullParserException, IOException {
+    private List parse() throws XmlPullParserException, IOException {
         try {
             XmlPullParser parser = Xml.newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
@@ -23,8 +24,8 @@ public class XMLParser {
         }
     }
 
-    private List<InsideXML> readBuilding(XmlPullParser parser) throws XmlPullParserException, IOException {
-        List entries = new ArrayList<InsideXML>();
+    private List readBuilding(XmlPullParser parser) throws XmlPullParserException, IOException {
+        List entries = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, ns, "building");
         while (parser.next() != XmlPullParser.END_TAG) {
@@ -40,17 +41,6 @@ public class XMLParser {
             }
         }
         return entries;
-    }
-
-    public static class InsideXML {
-
-        public final String title;
-        public final String description;
-
-        public InsideXML(String title, String description) {
-            this.title = title;
-            this.description = description;
-        }
     }
 
     public InsideXML readObject(XmlPullParser parser, String ns) throws XmlPullParserException, IOException {
@@ -73,9 +63,8 @@ public class XMLParser {
         return new InsideXML(title, description);
     }
 
-
     // Processes title tags in the feed.
-    public String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
 
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
@@ -84,7 +73,7 @@ public class XMLParser {
     }
 
     // Processes summary tags in the feed.
-    public String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
 
         parser.require(XmlPullParser.START_TAG, ns, "description");
         String summary = readText(parser);
@@ -93,7 +82,7 @@ public class XMLParser {
     }
 
     // For the tags title and summary, extracts their text values.
-    public String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
