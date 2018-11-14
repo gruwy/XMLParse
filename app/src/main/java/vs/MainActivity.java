@@ -1,42 +1,32 @@
 package vs.xmlparse;
 
-import android.content.Intent;
-import android.os.AsyncTask;
+import android.net.Uri;
 import android.os.Bundle;
+
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements DescriptionParent.OnFragmentInteractionListener, DescriptionChild.OnFragmentInteractionListener {
 
-    public ArrayList<String> arrayWithTitles = new ArrayList<String>();
+    XMLParser xmlParser = new XMLParser(this);
 
-    public ArrayList<String> arrayWithDescription = new ArrayList<String>();
-
-    public static final String WIFI = "Wi-Fi";
-
-    private static final String URL = "http://localhost:8080/app.xml";
-
-    private static boolean wifiConnected = false;
-
-    public static final String ANY = "Any";
-
-    public static String sPref = null;
+    ArrayList<String> arrayWithTitles = new ArrayList<String>();
+    ArrayList<String> arrayWithDescriptions = new ArrayList<String>();
 
     List<InsideXML> entries = null;
 
@@ -45,9 +35,25 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        loadPage();
+        ListView listView = (ListView) findViewById(R.id.listView);
 
-        ListView listView = findViewById(R.id.listView);
+        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.parent_fragment_container, new DescriptionParent());
+
+        try {
+            entries = xmlParser.parse();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        for (InsideXML insideXML : entries)
+
+        {
+            arrayWithTitles.add(insideXML.title);
+            arrayWithDescriptions.add(insideXML.description);
+        }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
                 android.R.layout.simple_list_item_1, arrayWithTitles);
@@ -56,73 +62,44 @@ public class MainActivity extends AppCompatActivity {
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                ft.commitNow();
             }
         });
 
     }
 
-    public void loadPage() {
-
-        if((sPref.equals(ANY)) && (wifiConnected)) {
-            new DownloadXmlTask().execute(URL);
+    @Override
+    public void onBackPressed() {
+        // if there is a fragment and the back stack of this fragment is not empty,
+        // then emulate 'onBackPressed' behaviour, because in default, it is not working
+        FragmentManager fm = getSupportFragmentManager();
+        for (Fragment frag : fm.getFragments()) {
+            if (frag.isVisible()) {
+                FragmentManager childFm = frag.getChildFragmentManager();
+                if (childFm.getBackStackEntryCount() > 0) {
+                    childFm.popBackStack();
+                    return;
+                }
+            }
         }
-
-        else if ((sPref.equals(WIFI)) && (wifiConnected)) {
-            new DownloadXmlTask().execute(URL);
-        } else {
-        }
+        super.onBackPressed();
     }
 
-    private class DownloadXmlTask extends AsyncTask<String, Void, String> {
-
-        @Override
-        protected String doInBackground(String... urls) {
-            try {
-                return loadXmlFromNetwork(urls[0]);
-            } catch (IOException e) {
-                return getResources().getString(R.string.app_name);
-            } catch (XmlPullParserException e) {
-                return getResources().getString(R.string.app_name);
-            }
-        }
-
-        private String loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
-            InputStream stream = null;
-            XMLParser xmlParser = new XMLParser();
-            List<InsideXML> entries = null;
-            StringBuilder htmlString = new StringBuilder();
-
-            try {
-                stream = downloadUrl(urlString);
-                entries = xmlParser.parse(stream);
-            }
-            catch (Exception ex) {}
-
-            finally {
-                if (stream != null) {
-                    stream.close(); }
-            }
-
-            for (InsideXML insideXML : entries) {
-                arrayWithTitles.add(insideXML.title);
-                arrayWithDescription.add(insideXML.description);
-            }
-
-            return htmlString.toString();
-        }
-
-        private InputStream downloadUrl(String urlString) throws IOException {
-            java.net.URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-
-            conn.connect();
-            return conn.getInputStream();
-        }
+    public String getMyTitles() {
+        return String.valueOf(arrayWithTitles);
     }
 
+    public String getMyDescriptions() {
+        return String.valueOf(arrayWithDescriptions);
+    }
+
+    @Override
+    public void messageFromParentFragment(Uri uri) {
+        Log.i("TAG", "received communication from parent fragment");
+    }
+
+    @Override
+    public void messageFromChildFragment(Uri uri) {
+        Log.i("TAG", "received communication from child fragment");
+    }
 }

@@ -2,33 +2,30 @@ package vs.xmlparse;
 
 import android.content.Context;
 import android.util.Log;
-import android.util.Xml;
 
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class XMLParser {
     private Context context;
 
+    XMLParser(Context current){
+        this.context = current;
+    }
+
     private static final String ns = null;
 
 
-    public List<InsideXML> parse(InputStream in) throws XmlPullParserException, IOException {
-        try {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setInput(in, null);
-            parser.next();
-            parser.nextTag();
-            return readParkingLot(parser);
-        } finally {
-            in.close();
-        }
+    public List<InsideXML> parse() throws XmlPullParserException, IOException {
+        XmlPullParser parser = context.getResources().getXml(R.xml.app);
+        parser.next();
+        parser.nextTag();
+        return readParkingLot(parser);
     }
 
     public List<InsideXML> readParkingLot(XmlPullParser parser) throws XmlPullParserException, IOException {
