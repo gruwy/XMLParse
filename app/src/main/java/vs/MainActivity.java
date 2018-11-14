@@ -30,14 +30,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String WIFI = "Wi-Fi";
 
-    private static final String URL = "http://127.0.0.1:8080/app.xml";
+    private static final String URL = "http://localhost:8080/app.xml";
 
     private static boolean wifiConnected = false;
+
+    public static final String ANY = "Any";
 
     public static String sPref = null;
 
     List<InsideXML> entries = null;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +63,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void loadPage() {
-        if ((sPref.equals(WIFI)) && (wifiConnected)) {
+
+        if((sPref.equals(ANY)) && (wifiConnected)) {
+            new DownloadXmlTask().execute(URL);
+        }
+
+        else if ((sPref.equals(WIFI)) && (wifiConnected)) {
             new DownloadXmlTask().execute(URL);
         } else {
         }
