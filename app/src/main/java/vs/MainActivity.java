@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
@@ -30,15 +31,12 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
 
     List<InsideXML> entries = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        ListView listView = (ListView) findViewById(R.id.listView);
-
-        final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.parent_fragment_container, new DescriptionParent());
+        final ListView listView = (ListView) findViewById(R.id.listView);
 
         try {
             entries = xmlParser.parse();
@@ -62,7 +60,11 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ft.commitNow();
+
+                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.parent_fragment_container, new DescriptionParent());
+                ft.addToBackStack(null).commit();
+
             }
         });
 
@@ -70,8 +72,7 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
 
     @Override
     public void onBackPressed() {
-        // if there is a fragment and the back stack of this fragment is not empty,
-        // then emulate 'onBackPressed' behaviour, because in default, it is not working
+
         FragmentManager fm = getSupportFragmentManager();
         for (Fragment frag : fm.getFragments()) {
             if (frag.isVisible()) {
@@ -85,12 +86,12 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
         super.onBackPressed();
     }
 
-    public String getMyTitles() {
-        return String.valueOf(arrayWithTitles);
+    public String[] getMyTitles() {
+        return arrayWithTitles.toArray(new String[arrayWithTitles.size()]);
     }
 
-    public String getMyDescriptions() {
-        return String.valueOf(arrayWithDescriptions);
+    public String[] getMyDescriptions() {
+        return arrayWithDescriptions.toArray(new String[arrayWithDescriptions.size()]);
     }
 
     @Override

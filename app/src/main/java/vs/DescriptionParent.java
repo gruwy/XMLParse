@@ -23,6 +23,9 @@ public class DescriptionParent extends Fragment {
 
     }
 
+    public void onClick(){
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         Fragment childFragment = new DescriptionChild();

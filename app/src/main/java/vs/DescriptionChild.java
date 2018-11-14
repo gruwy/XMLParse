@@ -1,11 +1,13 @@
 package vs.xmlparse;
 
+import android.content.Intent;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,18 +31,20 @@ public class DescriptionChild extends Fragment {
         closeFragment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStackImmediate();
+                getActivity().getSupportFragmentManager().popBackStack();
                 Toast toast = Toast.makeText(getActivity(),"Closed fragment", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
 
         MainActivity mainactivity = (MainActivity) getActivity();
-        String myTitles = mainactivity.getMyTitles();
-        titleFragment.setText(myTitles);
 
-        String myDescriptions = mainactivity.getMyDescriptions();
-        descriptionFragment.setText(myDescriptions);
+        String[] myTitles = mainactivity.getMyTitles();
+        String[] myDescriptions = mainactivity.getMyDescriptions();
+
+        titleFragment.setText(myTitles[0]);
+        descriptionFragment.setText(myDescriptions[3]);
+
 
         return view;
     }
@@ -60,11 +64,6 @@ public class DescriptionChild extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-
-    public void onBackPressed() {
-        getActivity().getSupportFragmentManager().popBackStack();
     }
 
     public interface OnFragmentInteractionListener {
