@@ -20,6 +20,13 @@ public class DescriptionChild extends Fragment {
 
     private TextView closeFragment, titleFragment, descriptionFragment;
 
+    int position;
+
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -41,9 +48,10 @@ public class DescriptionChild extends Fragment {
 
         String[] myTitles = mainactivity.getMyTitles();
         String[] myDescriptions = mainactivity.getMyDescriptions();
+        int position = mainactivity.position();
 
-        titleFragment.setText(myTitles[0]);
-        descriptionFragment.setText(myDescriptions[3]);
+        titleFragment.setText(myTitles[position]);
+        descriptionFragment.setText(myDescriptions[position]);
 
 
         return view;

@@ -1,5 +1,6 @@
 package vs.xmlparse;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -31,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
 
     List<InsideXML> entries = null;
 
+    int a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +64,10 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+                a = position;
+
                 final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.parent_fragment_container, new DescriptionParent());
+                ft.add(R.id.parent_fragment_container, new DescriptionParent());
                 ft.addToBackStack(null).commit();
 
             }
@@ -84,6 +89,11 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
             }
         }
         super.onBackPressed();
+    }
+
+    public int position(){
+
+        return a;
     }
 
     public String[] getMyTitles() {

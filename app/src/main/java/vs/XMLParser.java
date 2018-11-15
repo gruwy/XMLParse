@@ -6,6 +6,7 @@ import android.util.Log;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,6 +23,7 @@ public class XMLParser {
 
 
     public List<InsideXML> parse() throws XmlPullParserException, IOException {
+
         XmlPullParser parser = context.getResources().getXml(R.xml.app);
         parser.next();
         parser.nextTag();
