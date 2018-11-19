@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<objects>
-	<object>
-		<title>Title 1</title>
-		<description>Description 1</description>
-	</object>
+<parkinglot>
+	<car>
+		<title>Toyota Celica</title>
+		<description>The Toyota Celica (Japanese: トヨタ セリカ Toyota Serika) /ˈsɛlɪkə/ or /sɛˈliːkə/ is an automobile produced by Toyota from 1970 to 2006. The Celica name derives from the Latin word coelica meaning "heavenly" or "celestial". In Japan, the Celica was exclusive to Toyota Japanese dealerships Toyota Corolla Store.</description>
+	</car>
 	
-	<object>
-		<title>Title 2</title>
-		<description>Description 2</description>
-	</object>
+	<car>
+		<title>Toyota Supra</title>
+		<description>The Toyota Supra (Japanese: トヨタ・スープラ Toyota Sūpura) is a sports car and grand tourer manufactured by Toyota Motor Corporation since 1978. Initial four generations of the Supra was produced from 1978 to 2002. The styling of the Supra was derived from the Toyota Celica, but it was both longer and wider. Starting in mid-1986, the A70 Supra became a separate model from the Celica. In turn, Toyota also stopped using the prefix Celica and began just calling the car Supra.</description>
+	</car>
 	
-	<object>
-		<title>Title 3</title>
-		<description>Description 3</description>
-	</object>
+	<car>
+		<title>Toyota MR2</title>
+		<description>The Toyota MR2 is a two-seat, mid-engined, rear-wheel-drive sports car manufactured in Japan and marketed globally by Toyota from 1984 to 2007 over three generations: W10 (1984–1989), W20 (1990–1999) and W30 (2000–2007). It is Japans first mid-engined production car. Conceived as a small, economical and sporty car, the MR2 employed straightforward design elements, including fully independent MacPherson strut front and rear suspensions, four wheel disc brakes, and transverse-mounted inline-four engines.</description>
+	</car>
 	
-	<object>
-		<title>Title 4</title>
-		<description>Description 4</description>
-	</object>
+	<car>
+		<title>Toyota Chaser</title>
+		<description>The Toyota Chaser is a mid-size car produced by Toyota in Japan. Most are 4-door sedans, with the 2-door coupe discontinued after the first generation. It was introduced on the 1976 Toyota Corona Mark II platform, and was sold new by Toyota at Toyota Vista Store dealerships only in Japan, together with the Toyota Cresta. The Toyota Chaser has been known as one of the triplet sedans of Toyota, because it shares the same chassis with the Toyota Cressida/Mark II, and the Cresta, and afforded Toyota the opportunity to sell one platform.</description>
+	</car>
 	
-	<object>
-		<title>Title 5</title>
-		<description>Description 5</description>
-	</object>
-</objects>
+	<car>
+		<title>Toyota Corolla</title>
+		<description>The Toyota Corolla (Japanese: トヨタ・カローラ Toyota Karōra) is a line of subcompact and compact cars manufactured by Toyota. Introduced in 1966, the Corolla was the best-selling car worldwide by 1974 and has been one of the best-selling cars in the world since then. In 1997, the Corolla became the best selling nameplate in the world, surpassing the Volkswagen Beetle. Toyota reached the milestone of 40 million Corollas sold over eleven generations in July 2013. The series has undergone several major redesigns.</description>
+	</car>
+</parkinglot>
