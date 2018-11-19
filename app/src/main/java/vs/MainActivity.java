@@ -87,7 +87,10 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
                     return;
                 }
             }
+            Toast toast = Toast.makeText(MainActivity.this,"Closed fragments by 'back' button ", Toast.LENGTH_SHORT);
+            toast.show();
         }
+
         super.onBackPressed();
     }
 

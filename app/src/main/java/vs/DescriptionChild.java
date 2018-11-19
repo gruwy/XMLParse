@@ -1,6 +1,7 @@
 package vs.xmlparse;
 
 import android.content.Intent;
+import android.graphics.Rect;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
@@ -9,10 +10,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import static android.content.ContentValues.TAG;
 
 public class DescriptionChild extends Fragment {
 
@@ -39,7 +43,7 @@ public class DescriptionChild extends Fragment {
             @Override
             public void onClick(View v) {
                 getActivity().getSupportFragmentManager().popBackStack();
-                Toast toast = Toast.makeText(getActivity(),"Closed fragment", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(getActivity(),"Closed fragments by 'close' button ", Toast.LENGTH_SHORT);
                 toast.show();
             }
         });

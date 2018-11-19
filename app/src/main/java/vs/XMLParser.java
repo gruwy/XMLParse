@@ -3,10 +3,8 @@ package vs.xmlparse;
 import android.content.Context;
 import android.util.Log;
 
-
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
