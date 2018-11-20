@@ -17,12 +17,21 @@ public class XMLParser {
     private static final String ns = null;
 
     public List<InsideXML> parse(InputStream in) throws XmlPullParserException, IOException {
-    try{
+
+        try
+        {
         XmlPullParser parser = Xml.newPullParser();
-        parser.setInput(in, null);
-        parser.next();
+        parser.setInput(in, "UTF-8");
         parser.nextTag();
         return readParkingLot(parser);}
+        catch (IOException e) {
+            return null;
+        } catch (XmlPullParserException e) {
+            return null;
+        }catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
         finally {
         in.close();
         }

@@ -7,9 +7,12 @@ import android.os.Bundle;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -32,16 +35,20 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
 
     int a;
 
-    private static final String TAG = "XMLParse";
+    ArrayList<String> arrayWithTitles = new ArrayList<String>();
+    ArrayList<String> arrayWithDescriptions = new ArrayList<String>();
+
+    private static final String TAG = "Callbackz";
     private static final String URL = "http://192.168.31.254:8080/app.xml";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DownloadXML task = new DownloadXML();
         task.execute(URL);
-
-        /*listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        ListView listView = (ListView) findViewById(R.id.listView);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
@@ -52,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
                 ft.addToBackStack(null).commit();
 
             }
-        });*/
+        });
     }
 
     @Override
@@ -90,10 +97,14 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
         Log.i(TAG, "received communication from child fragment");
     }
 
-    public class DownloadXML extends AsyncTask<String, Void, List<InsideXML>> {
+    public String[] getMyTitles() {
+        return arrayWithTitles.toArray(new String[arrayWithTitles.size()]);
+    }
+    public String[] getMyDescriptions() {
+        return arrayWithDescriptions.toArray(new String[arrayWithDescriptions.size()]);
+    }
 
-        ArrayList<String> arrayWithTitles = new ArrayList<String>();
-        ArrayList<String> arrayWithDescriptions = new ArrayList<String>();
+    public class DownloadXML extends AsyncTask<String, Void, List<InsideXML>> {
 
         private ProgressDialog dialog;
 
@@ -114,9 +125,9 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
             try {
                 return loadXmlFromNetwork(urls[0]);
             } catch (IOException e) {
-                return entries;
+                return null;
             } catch (XmlPullParserException e) {
-                return entries;
+                return null;
             }
         }
 
@@ -128,15 +139,18 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
             try {
                 Log.d(TAG, "Trying to download");
                 stream = downloadUrl(urlString);
+                Log.d(TAG, "Ready to parse");
                 Log.d(TAG, "Trying to parse");
                 entries = xmlParser.parse(stream);
                 Log.d(TAG, "Done");
-            } finally {
-                if (stream != null) {
-                    Log.d(TAG, "Closing stream");
-                    stream.close();
+            }   catch (IOException e) {
+                return null;
+            } catch (XmlPullParserException e) {
+                return null;
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
                 }
-            }
 
             for (InsideXML insideXML : entries)
 
@@ -160,13 +174,6 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
             return conn.getInputStream();
         }
 
-
-        public String[] getMyTitles() {
-            return arrayWithTitles.toArray(new String[arrayWithTitles.size()]);
-        }
-        public String[] getMyDescriptions() {
-            return arrayWithDescriptions.toArray(new String[arrayWithDescriptions.size()]);
-        }
     }
 
 

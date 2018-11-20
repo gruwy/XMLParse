@@ -49,14 +49,14 @@ public class DescriptionChild extends Fragment {
             }
         });
 
-        //AsyncTask DownloadXML = new MainActivity.DownloadXML(this);
+        MainActivity mainactivity = (MainActivity) getActivity();
 
-        /*String[] myTitles = mainactivity.getMyTitles();
+        String[] myTitles = mainactivity.getMyTitles();
         String[] myDescriptions = mainactivity.getMyDescriptions();
         int position = mainactivity.position();
 
         titleFragment.setText(myTitles[position]);
-        descriptionFragment.setText(myDescriptions[position]);*/
+        descriptionFragment.setText(myDescriptions[position]);
 
 
         return view;
