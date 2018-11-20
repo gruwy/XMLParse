@@ -2,6 +2,7 @@ package vs.xmlparse;
 
 import android.content.Intent;
 import android.graphics.Rect;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
@@ -48,14 +49,14 @@ public class DescriptionChild extends Fragment {
             }
         });
 
-        MainActivity mainactivity = (MainActivity) getActivity();
+        //AsyncTask DownloadXML = new MainActivity.DownloadXML(this);
 
-        String[] myTitles = mainactivity.getMyTitles();
+        /*String[] myTitles = mainactivity.getMyTitles();
         String[] myDescriptions = mainactivity.getMyDescriptions();
         int position = mainactivity.position();
 
         titleFragment.setText(myTitles[position]);
-        descriptionFragment.setText(myDescriptions[position]);
+        descriptionFragment.setText(myDescriptions[position]);*/
 
 
         return view;

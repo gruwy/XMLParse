@@ -2,30 +2,30 @@ package vs.xmlparse;
 
 import android.content.Context;
 import android.util.Log;
+import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 public class XMLParser {
-    private Context context;
-
-    XMLParser(Context current){
-        this.context = current;
-    }
 
     private static final String ns = null;
 
-
-    public List<InsideXML> parse() throws XmlPullParserException, IOException {
-
-        XmlPullParser parser = context.getResources().getXml(R.xml.app);
+    public List<InsideXML> parse(InputStream in) throws XmlPullParserException, IOException {
+    try{
+        XmlPullParser parser = Xml.newPullParser();
+        parser.setInput(in, null);
         parser.next();
         parser.nextTag();
-        return readParkingLot(parser);
+        return readParkingLot(parser);}
+        finally {
+        in.close();
+        }
     }
 
     public List<InsideXML> readParkingLot(XmlPullParser parser) throws XmlPullParserException, IOException {
@@ -44,11 +44,11 @@ public class XMLParser {
                 skip(parser);
             }
         }
-        Log.d("Entries:", entries.toString());
         return entries;
     }
 
     private InsideXML readCar(XmlPullParser parser) throws XmlPullParserException, IOException {
+
         parser.require(XmlPullParser.START_TAG, ns, "car");
         String title = null;
         String description = null;
@@ -65,7 +65,7 @@ public class XMLParser {
                 skip(parser);
             }
         }
-        Log.d("InsideXML:", String.valueOf(new InsideXML(title, description)));
+
         return new InsideXML(title, description);
     }
 
@@ -75,7 +75,7 @@ public class XMLParser {
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "title");
-        Log.d("Title:", title);
+
         return title;
     }
 
@@ -85,7 +85,7 @@ public class XMLParser {
         parser.require(XmlPullParser.START_TAG, ns, "description");
         String description = readText(parser);
         parser.require(XmlPullParser.END_TAG, ns, "description");
-        Log.d("Description:", description);
+
         return description;
     }
 
@@ -96,7 +96,7 @@ public class XMLParser {
             result = parser.getText();
             parser.nextTag();
         }
-        Log.d("Extracted text:", result);
+
         return result;
     }
 
