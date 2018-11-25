@@ -1,7 +1,5 @@
 package vs.xmlparse;
 
-import android.content.Context;
-import android.util.Log;
 import android.util.Xml;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -16,35 +14,39 @@ public class XMLParser {
 
     private static final String ns = null;
 
-    public List<InsideXML> parse(InputStream in) throws XmlPullParserException, IOException {
+    public List<InsideXML> parse(InputStream in) throws IOException {
 
-        try
-        {
-        XmlPullParser parser = Xml.newPullParser();
-        parser.setInput(in, "UTF-8");
-        parser.nextTag();
-        return readParkingLot(parser);}
-        catch (IOException e) {
-            return null;
-        } catch (XmlPullParserException e) {
-            return null;
-        }catch (Exception e) {
+        // Creating a new instance of pull parser, setting input and processing to next tag.
+        try {
+            XmlPullParser parser = Xml.newPullParser();
+            parser.setInput(in, "UTF-8");
+            parser.nextTag();
+            return readParkingLot(parser);
+        }
+
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }
+
         finally {
-        in.close();
+            in.close();
         }
     }
 
-    public List<InsideXML> readParkingLot(XmlPullParser parser) throws XmlPullParserException, IOException {
+    // Processing the "Parking lot" to see if we have "car" tags. If we don't see it, the parser skips the tag. Returns a list.
+    private List<InsideXML> readParkingLot(XmlPullParser parser) throws XmlPullParserException, IOException {
+
         List<InsideXML> entries = new ArrayList<>();
 
         parser.require(XmlPullParser.START_TAG, ns, "parkinglot");
+
         while (parser.next() != XmlPullParser.END_TAG) {
+
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
+
             String name = parser.getName();
 
             if (name.equals("car")) {
@@ -53,25 +55,36 @@ public class XMLParser {
                 skip(parser);
             }
         }
+
         return entries;
+
     }
 
     private InsideXML readCar(XmlPullParser parser) throws XmlPullParserException, IOException {
 
         parser.require(XmlPullParser.START_TAG, ns, "car");
+
+        // Initializing the strings
         String title = null;
         String description = null;
+
         while (parser.next() != XmlPullParser.END_TAG) {
+
             if (parser.getEventType() != XmlPullParser.START_TAG) {
                 continue;
             }
             String name = parser.getName();
-            if (name.equals("title")) {
-                title = readTitle(parser);
-            } else if (name.equals("description")) {
-                description = readDescription(parser);
-            } else {
-                skip(parser);
+
+            switch (name) {
+                case "title":
+                    title = readTitle(parser);
+                    break;
+                case "description":
+                    description = readDescription(parser);
+                    break;
+                default:
+                    skip(parser);
+                    break;
             }
         }
 
@@ -79,7 +92,7 @@ public class XMLParser {
     }
 
     // Processes title tags in the feed.
-    public String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
+    private String readTitle(XmlPullParser parser) throws IOException, XmlPullParserException {
 
         parser.require(XmlPullParser.START_TAG, ns, "title");
         String title = readText(parser);
@@ -88,8 +101,8 @@ public class XMLParser {
         return title;
     }
 
-    // Processes summary tags in the feed.
-    public String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
+    // Processes description tags in the feed.
+    private String readDescription(XmlPullParser parser) throws IOException, XmlPullParserException {
 
         parser.require(XmlPullParser.START_TAG, ns, "description");
         String description = readText(parser);
@@ -98,8 +111,8 @@ public class XMLParser {
         return description;
     }
 
-    // For the tags title and summary, extracts their text values.
-    public String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
+    // For the tags title and description, extracts their text values.
+    private String readText(XmlPullParser parser) throws IOException, XmlPullParserException {
         String result = "";
         if (parser.next() == XmlPullParser.TEXT) {
             result = parser.getText();
@@ -109,11 +122,15 @@ public class XMLParser {
         return result;
     }
 
+    // A skip method taken from https://developer.android.com/training/basics/network-ops/xml to skip tags.
     private void skip(XmlPullParser parser) throws XmlPullParserException, IOException {
+
         if (parser.getEventType() != XmlPullParser.START_TAG) {
             throw new IllegalStateException();
         }
+
         int depth = 1;
+
         while (depth != 0) {
             switch (parser.next()) {
                 case XmlPullParser.END_TAG:

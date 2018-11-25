@@ -1,7 +1,6 @@
 package vs.xmlparse;
 
-import android.app.ProgressDialog;
-import android.net.Uri;
+import android.annotation.SuppressLint;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -10,14 +9,11 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
-
-import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,36 +22,43 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-
-public class MainActivity extends AppCompatActivity implements DescriptionParent.OnFragmentInteractionListener, DescriptionChild.OnFragmentInteractionListener {
-
-    XMLParser xmlParser = new XMLParser();
+public class MainActivity extends AppCompatActivity  {
 
     List<InsideXML> entries = null;
 
-    int a;
+    int listViewPosition;
 
-    ArrayList<String> arrayWithTitles = new ArrayList<String>();
-    ArrayList<String> arrayWithDescriptions = new ArrayList<String>();
+    ArrayList<String> arrayWithTitles = new ArrayList<>();
+    ArrayList<String> arrayWithDescriptions = new ArrayList<>();
 
-    private static final String TAG = "Callbackz";
     private static final String URL = "http://192.168.31.254:8080/app.xml";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        DownloadXML task = new DownloadXML();
-        task.execute(URL);
-        ListView listView = (ListView) findViewById(R.id.listView);
+
+        // Creating new instance of DownloadXML class
+        DownloadXML downloadXML = new DownloadXML();
+
+        // Executing ASyncTask to download, parse and display the data in list view
+        downloadXML.execute(URL);
+
+        // Initializing list view
+        ListView listView = findViewById(R.id.listView);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                a = position;
+                // Assigning value to the int for further processing
+                listViewPosition = position;
 
-                final FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                //Fragment transaction
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+
                 ft.add(R.id.parent_fragment_container, new DescriptionParent());
+
                 ft.addToBackStack(null).commit();
 
             }
@@ -65,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
     @Override
     public void onBackPressed() {
 
+        // This module checks if the back is pressed in the fragment and displays toast after closing the fragment stack
         FragmentManager fm = getSupportFragmentManager();
         for (Fragment frag : fm.getFragments()) {
             if (frag.isVisible()) {
@@ -74,84 +78,82 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
                     return;
                 }
             }
+
             Toast toast = Toast.makeText(MainActivity.this,"Closed fragments by 'back' button ", Toast.LENGTH_SHORT);
+
             toast.show();
         }
 
         super.onBackPressed();
     }
 
+    // Position of an item in list view that is used for assigning an index in array for childfragment display
     public int position(){
-
-        return a;
+        return listViewPosition;
     }
 
-
-    @Override
-    public void messageFromParentFragment(Uri uri) {
-        Log.i(TAG, "received communication from parent fragment");
-    }
-
-    @Override
-    public void messageFromChildFragment(Uri uri) {
-        Log.i(TAG, "received communication from child fragment");
-    }
-
+    // Methods to transfer values to display in child fragment
     public String[] getMyTitles() {
+
         return arrayWithTitles.toArray(new String[arrayWithTitles.size()]);
-    }
-    public String[] getMyDescriptions() {
-        return arrayWithDescriptions.toArray(new String[arrayWithDescriptions.size()]);
+
     }
 
+    public String[] getMyDescriptions() {
+
+        return arrayWithDescriptions.toArray(new String[arrayWithDescriptions.size()]);
+
+    }
+
+    // This class is an implementation of AsyncTask used for downloading XML feed from assigned URL.
+    @SuppressLint("StaticFieldLeak")
     public class DownloadXML extends AsyncTask<String, Void, List<InsideXML>> {
 
-        private ProgressDialog dialog;
-
-        @Override
-        protected void onPreExecute() {
-        }
-
+        //
         @Override
         protected void onPostExecute(List<InsideXML> result) {
-        ListView listView = (ListView) findViewById(R.id.listView);
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this,
-                    android.R.layout.simple_list_item_1, arrayWithTitles);
-        listView.setAdapter(adapter);
+
+            ListView listView = findViewById(R.id.listView);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, arrayWithTitles);
+
+            listView.setAdapter(adapter);
+
         }
 
         @Override
         protected List<InsideXML> doInBackground(String... urls) {
+
+            // Trying to load xml from network using the first link provided by input stream
             try {
                 return loadXmlFromNetwork(urls[0]);
-            } catch (IOException e) {
-                return null;
-            } catch (XmlPullParserException e) {
+            }
+            catch (Exception e) {
+                e.printStackTrace();
                 return null;
             }
         }
 
-        private List<InsideXML> loadXmlFromNetwork(String urlString) throws XmlPullParserException, IOException {
-            InputStream stream = null;
-            XMLParser xmlParser = new XMLParser();
-            List<InsideXML> entries = null;
+        private List<InsideXML> loadXmlFromNetwork(String urlString) {
 
+            // Calling InputStream and entry list
+            InputStream stream;
+            List<InsideXML> entries;
+
+            // Creating parser instance
+            XMLParser xmlParser = new XMLParser();
+
+            // Trying assigning a method to input stream and attempting to parse the information from provided input stream
             try {
-                Log.d(TAG, "Trying to download");
                 stream = downloadUrl(urlString);
-                Log.d(TAG, "Ready to parse");
-                Log.d(TAG, "Trying to parse");
                 entries = xmlParser.parse(stream);
-                Log.d(TAG, "Done");
-            }   catch (IOException e) {
-                return null;
-            } catch (XmlPullParserException e) {
-                return null;
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
                 return null;
-                }
+            }
 
+            //This cycle processes the list inside XML file and adds titles to arrayWithTitles and descriptions to arrayWithDescriptions for further display and more comfortable work with data
             for (InsideXML insideXML : entries)
 
             {
@@ -159,22 +161,35 @@ public class MainActivity extends AppCompatActivity implements DescriptionParent
                 arrayWithDescriptions.add(insideXML.description);
             }
 
+            // Returns parsed entry list
             return entries;
+
         }
 
         private InputStream downloadUrl(String urlString) throws IOException {
             URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            return conn.getInputStream();
+
+            // Obtaining new HTTPURLConnection
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+
+            // Setting timeouts
+            connection.setReadTimeout(10000);
+            connection.setConnectTimeout(15000);
+
+            // Setting a default method to get the *.xml file
+            connection.setRequestMethod("GET");
+
+            // Setting the URL connection for using it as input
+            connection.setDoInput(true);
+
+            // Starting the query
+            connection.connect();
+
+            // Getting an input stream from the connection operation
+            return connection.getInputStream();
+
         }
 
     }
-
 
 }
