@@ -87,9 +87,11 @@ public class MainActivity extends AppCompatActivity  {
         super.onBackPressed();
     }
 
-    // Position of an item in list view that is used for assigning an index in array for childfragment display
+    // Position of an item in list view that is used for assigning an index in array for child fragment display
     public int position(){
+
         return listViewPosition;
+
     }
 
     // Methods to transfer values to display in child fragment
@@ -109,7 +111,6 @@ public class MainActivity extends AppCompatActivity  {
     @SuppressLint("StaticFieldLeak")
     public class DownloadXML extends AsyncTask<String, Void, List<InsideXML>> {
 
-        //
         @Override
         protected void onPostExecute(List<InsideXML> result) {
 
@@ -132,13 +133,15 @@ public class MainActivity extends AppCompatActivity  {
                 e.printStackTrace();
                 return null;
             }
+
         }
 
         private List<InsideXML> loadXmlFromNetwork(String urlString) {
 
+            List<InsideXML> entries;
+
             // Calling InputStream and entry list
             InputStream stream;
-            List<InsideXML> entries;
 
             // Creating parser instance
             XMLParser xmlParser = new XMLParser();
@@ -167,6 +170,7 @@ public class MainActivity extends AppCompatActivity  {
         }
 
         private InputStream downloadUrl(String urlString) throws IOException {
+
             URL url = new URL(urlString);
 
             // Obtaining new HTTPURLConnection

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,10 +20,8 @@ public class DescriptionChild extends Fragment {
 
         View view = inflater.inflate(R.layout.description_child, container, false);
 
-        TextView closeFragment = view.findViewById(R.id.close);
-
+        Button closeFragment = view.findViewById(R.id.close);
         TextView titleFragment = view.findViewById(R.id.fragment_title);
-
         TextView descriptionFragment = view.findViewById(R.id.fragment_description);
 
         closeFragment.setOnClickListener(new View.OnClickListener() {
@@ -39,13 +38,10 @@ public class DescriptionChild extends Fragment {
 
 
         MainActivity mainactivity = (MainActivity) getActivity();
-
         assert mainactivity != null;
 
         String[] myTitles = mainactivity.getMyTitles();
-
         String[] myDescriptions = mainactivity.getMyDescriptions();
-
         int position = mainactivity.position();
 
         titleFragment.setText(myTitles[position]);

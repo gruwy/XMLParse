@@ -13,7 +13,6 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
-
 public class DescriptionParent extends Fragment implements View.OnClickListener {
 
     @Override
@@ -47,6 +46,5 @@ public class DescriptionParent extends Fragment implements View.OnClickListener 
 
         Objects.requireNonNull(getActivity()).getSupportFragmentManager().popBackStack();
     }
-
 
 }
